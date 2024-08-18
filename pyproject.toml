@@ -1,0 +1,46 @@
+[tool.poetry]
+name = "fpboost"
+version = "0.1.0"
+description = ""
+authors = []
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10.0"
+urllib3 = "^1.26.8"
+numpy = "^1.26.4"
+pandas = "^2.2.1"
+tqdm = "^4.66.2"
+scikit-survival = "^0.22.2"
+survset = "^0.2.6"
+sklearndf = "^2.3.0"
+matplotlib = "^3.9.0"
+seaborn = "^0.13.2"
+torch = "^2.3.1"
+numba = "^0.59.1"
+
+
+[tool.poetry.group.code_quality.dependencies]
+black = {extras = ["jupyter"], version = "^24.8.0"}
+flake8 = "^7.0.0"
+pylint = "^3.1.0"
+mypy = "^1.9.0"
+isort = "^5.13.2"
+pre-commit = "^3.6.2"
+
+
+[tool.poetry.group.jupyter.dependencies]
+notebook = "^6.4.1"
+ipywidgets = "^8.1.2"
+
+
+[tool.poetry.group.experiments.dependencies]
+pycox = "^0.2.3"
+ray = {extras = ["default"], version = "~2.20.0"}
+optuna = "^3.6.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
