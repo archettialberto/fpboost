@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "fpboost"
 version = "0.1.0"
-description = ""
-authors = []
+description = "FPBoost: a gradient boosting model for survival analysis that builds hazard functions as a combination of fully parametric hazards."
+authors = ["Alberto Archetti <alberto.archetti@polimi.it>", "Eugenio Lomurno <eugenio.lomurno@polimi.it>", "Diego Piccinotti <diego@chattermill.io>"]
 license = "MIT"
 readme = "README.md"
 
@@ -11,14 +11,8 @@ python = "^3.10.0"
 urllib3 = "^1.26.8"
 numpy = "^1.26.4"
 pandas = "^2.2.1"
-tqdm = "^4.66.2"
 scikit-survival = "^0.22.2"
-survset = "^0.2.6"
-sklearndf = "^2.3.0"
-matplotlib = "^3.9.0"
-seaborn = "^0.13.2"
 torch = "^2.3.1"
-numba = "^0.59.1"
 
 
 [tool.poetry.group.code_quality.dependencies]
@@ -30,15 +24,21 @@ isort = "^5.13.2"
 pre-commit = "^3.6.2"
 
 
-[tool.poetry.group.jupyter.dependencies]
-notebook = "^6.4.1"
-ipywidgets = "^8.1.2"
+[tool.poetry.group.testing.dependencies]
+pytest-cov = "^4.1.0"
+pytest-randomly = "^3.15.0"
 
 
 [tool.poetry.group.experiments.dependencies]
 pycox = "^0.2.3"
 ray = {extras = ["default"], version = "~2.20.0"}
 optuna = "^3.6.1"
+sklearndf = "^2.3.0"
+numba = "^0.59.1"
+notebook = "^6.4.1"
+ipywidgets = "^8.1.2"
+matplotlib = "^3.9.0"
+seaborn = "^0.13.2"
 
 
 [build-system]

@@ -15,6 +15,8 @@ from sksurv.util import check_array_survival
 from torch import Tensor
 from torch.autograd import Variable
 
+__all__ = ["FPBoost"]
+
 
 class FPBoost(BaseEstimator, SurvivalAnalysisMixin):
     """FPBoost class."""
@@ -27,20 +29,18 @@ class FPBoost(BaseEstimator, SurvivalAnalysisMixin):
         "learning_rate": [Interval(numbers.Real, 0, None, closed="neither")],
         "alpha": [Interval(numbers.Real, 0, None, closed="left")],
         "l1_ratio": [Interval(numbers.Real, 0, 1, closed="both")],
-        "uniform_heads": [StrOptions(["True", "False"])],
-        "heads_activation": [StrOptions(["relu", "sigmoid"])],
-        "verbose": [StrOptions(["True", "False"])],
-        "random_state": [Interval(numbers.Integral, 0, None, closed="left")],
+        "uniform_heads": [bool],
+        "heads_activation": [StrOptions({"relu", "sigmoid"})],
     }
 
     def __init__(
         self,
-        weibull_heads: int = 4,
-        loglogistic_heads: int = 4,
+        weibull_heads: int = 2,
+        loglogistic_heads: int = 2,
         n_estimators: int = 100,
         max_depth: int = 1,
         learning_rate: float = 0.1,
-        alpha: float = 0.01,
+        alpha: float = 0.0,
         l1_ratio: float = 0.5,
         uniform_heads: bool = False,
         heads_activation: str = "relu",
@@ -66,11 +66,12 @@ class FPBoost(BaseEstimator, SurvivalAnalysisMixin):
         self._base_timeline = np.linspace(0, 1, 100)
 
     def _init_state(self):
-        self.init_eta_ = np.random.rand(self.heads) + 0.5
+        seed = np.random.default_rng(self.random_state)
+        self.init_eta_ = seed.random(self.heads) + 0.5
         self.eta_heads_ = [[] for _ in range(self.heads)]
-        self.init_k_ = np.random.rand(self.heads) * 2
+        self.init_k_ = seed.random(self.heads) * 2
         self.k_heads_ = [[] for _ in range(self.heads)]
-        self.init_w_ = np.random.rand(self.heads)
+        self.init_w_ = seed.random(self.heads)
         self.w_heads_ = [[] for _ in range(self.heads)]
 
     def _predict_etas(self, X):
@@ -167,13 +168,13 @@ class FPBoost(BaseEstimator, SurvivalAnalysisMixin):
         return -(grad / np.abs(grad).max())
 
     def _fit_base_learner(self, X, y):
-        reg = DecisionTreeRegressor(max_depth=self.max_depth)
+        reg = DecisionTreeRegressor(max_depth=self.max_depth, random_state=self.random_state)
         reg.fit(X, y)
         return reg
 
     def _fit(self, X, events, times):
-        events = torch.tensor(events).float().reshape((-1,))
-        times = torch.tensor(times).float().reshape((-1, 1))
+        events = torch.tensor(events.copy()).float().reshape((-1,))
+        times = torch.tensor(times.copy()).float().reshape((-1, 1))
 
         for _ in range(self.n_estimators):
             params = self._predict_params(X)
@@ -191,8 +192,10 @@ class FPBoost(BaseEstimator, SurvivalAnalysisMixin):
 
     def fit(self, X, y):
         self._validate_params()
-        X = self._validate_data(X, min_samples=2)
+        X = self._validate_data(X)
         events, times = check_array_survival(X, y)
+        self.max_time_ = times.max()
+        times = times / self.max_time_
         self.unique_times_ = np.unique(times)
         self._init_state()
         self._fit(X, events, times)
@@ -237,6 +240,7 @@ class FPBoost(BaseEstimator, SurvivalAnalysisMixin):
         cum_hazard = self._predict_cumulative_hazard(X, times)
         if return_array:
             return cum_hazard
+        times = self.max_time_ * times
         return np.array([StepFunction(times, cum_hazard[i]) for i in range(len(X))])
 
     def predict_survival_function(self, X, return_array=False):
@@ -245,4 +249,5 @@ class FPBoost(BaseEstimator, SurvivalAnalysisMixin):
         survival = np.exp(-cum_hazard)
         if return_array:
             return survival
+        times = self.max_time_ * times
         return np.array([StepFunction(times, survival[i]) for i in range(len(X))])
