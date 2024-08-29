@@ -1,4 +1,4 @@
-# FPBoost: Fullt Parametric Gradient Boosting for Survival Analysis
+# FPBoost: Fully Parametric Gradient Boosting for Survival Analysis
 
 ![License Banner](https://img.shields.io/badge/License-MIT-purple.svg)
 ![Black Banner](https://img.shields.io/badge/code%20style-black-000000.svg)
@@ -19,6 +19,8 @@ Then, install the dependencies using Poetry.
 poetry install
 ```
 
-## 📚 References
+## :books: How to Cite
 
-[Anonymized] (2024).
+```
+TODO
+```
