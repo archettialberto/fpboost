@@ -1,11 +1,12 @@
 """Test module for the FPBoost class."""
 
 import numpy as np
-from sklearn.model_selection import ShuffleSplit, cross_val_score, train_test_split
+from sklearn.model_selection import (ShuffleSplit, cross_val_score,
+                                     train_test_split)
 from sksurv.datasets import load_gbsg2
 from sksurv.preprocessing import OneHotEncoder
 
-from .fpboost import FPBoost
+from fpboost.models import FPBoost
 
 
 def test_fpboost_single_training():

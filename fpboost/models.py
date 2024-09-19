@@ -12,21 +12,19 @@ from sklearn.utils._param_validation import Interval, StrOptions
 from sksurv.base import SurvivalAnalysisMixin
 from sksurv.functions import StepFunction
 from sksurv.util import check_array_survival
-from sympy import Union
-from torch import Tensor
 from torch.autograd import Variable
 
 __all__ = ["FPBoost"]
 
 
-class FPBoost(BaseEstimator, SurvivalAnalysisMixin):
+class FPBoost(SurvivalAnalysisMixin, BaseEstimator):
     r"""Gradient boosting for survival data based on the composition of fully parametric
     distributions. The model is trained by minimizing the negative log-likelihood with an
     optional ElasticNet regularization term. The model is an ensemble of base learners, where each
     base learner is either a Weibull or a log-logistic distribution.
 
     TODO: reference
-    
+
     Args:
         weibull_heads: Number of Weibull heads in the ensemble.
         loglogistic_heads: Number of log-logistic heads in the ensemble.
@@ -100,7 +98,7 @@ class FPBoost(BaseEstimator, SurvivalAnalysisMixin):
         self.init_w_ = seed.random(self.heads)
         self.w_heads_ = [[] for _ in range(self.heads)]
 
-    def _predict_etas(self, X: np.array) -> np.array:
+    def _predict_etas(self, X):
         output = np.zeros((len(X), self.heads)) + self.init_eta_.reshape((1, -1))
         for i, regs in enumerate(self.eta_heads_):
             if len(regs) == 0:
@@ -109,7 +107,7 @@ class FPBoost(BaseEstimator, SurvivalAnalysisMixin):
             output[:, i] += self.learning_rate * np.sum(preds, axis=1)
         return output
 
-    def _predict_ks(self, X: np.array) -> np.array:
+    def _predict_ks(self, X):
         output = np.ones((len(X), self.heads)) * self.init_k_.reshape((1, -1))
         for i, regs in enumerate(self.k_heads_):
             if len(regs) == 0:
@@ -118,7 +116,7 @@ class FPBoost(BaseEstimator, SurvivalAnalysisMixin):
             output[:, i] += self.learning_rate * np.sum(preds, axis=1)
         return output
 
-    def _predict_ws(self, X: np.array) -> np.array:
+    def _predict_ws(self, X):
         if self.uniform_heads:
             return np.ones((len(X), self.heads)) / self.heads
         output = np.ones((len(X), self.heads)) * self.init_w_.reshape((1, -1))
@@ -129,7 +127,7 @@ class FPBoost(BaseEstimator, SurvivalAnalysisMixin):
             output[:, i] += self.learning_rate * np.sum(preds, axis=1)
         return output
 
-    def _predict_params(self, X: np.array) -> np.array:
+    def _predict_params(self, X):
         etas = self._predict_etas(X).reshape((-1, self.heads, 1))
         ks = self._predict_ks(X).reshape((-1, self.heads, 1))
         ws = self._predict_ws(X).reshape((-1, self.heads, 1))
@@ -149,7 +147,7 @@ class FPBoost(BaseEstimator, SurvivalAnalysisMixin):
             return torch.log1p(eta * times**k)
         return np.log1p(eta * times**k)
 
-    def _get_neg_grads(self, params: np.array, events: Tensor, times: Tensor) -> np.array:
+    def _get_neg_grads(self, params, events, times):
         params_torch = Variable(torch.tensor(params).float(), requires_grad=True)
 
         etas = F.relu(params_torch[:, :, 0])
@@ -193,12 +191,12 @@ class FPBoost(BaseEstimator, SurvivalAnalysisMixin):
         grad[np.isnan(grad)] = 0.0
         return -(grad / np.abs(grad).max())
 
-    def _fit_base_learner(self, X: np.array, y: np.array) -> DecisionTreeRegressor:
+    def _fit_base_learner(self, X, y) -> DecisionTreeRegressor:
         reg = DecisionTreeRegressor(max_depth=self.max_depth, random_state=self.random_state)
         reg.fit(X, y)
         return reg
 
-    def _fit(self, X: np.array, events: np.array, times: np.array) -> None:
+    def _fit(self, X, events, times) -> None:
         events = torch.tensor(events.copy()).float().reshape((-1,))
         times = torch.tensor(times.copy()).float().reshape((-1, 1))
 
@@ -216,7 +214,7 @@ class FPBoost(BaseEstimator, SurvivalAnalysisMixin):
                 if not self.uniform_heads:
                     self.w_heads_[i].append(self._fit_base_learner(X, w_grads[:, i]))
 
-    def fit(self, X: np.array, y: np.array) -> "FPBoost":
+    def fit(self, X, y) -> "FPBoost":
         """Fit the model to the training data.
 
         Args:
@@ -236,7 +234,7 @@ class FPBoost(BaseEstimator, SurvivalAnalysisMixin):
         self._fit(X, events, times)
         return self
 
-    def predict(self, X: np.array) -> np.array:
+    def predict(self, X):
         """Predict the negative mean time to event for the input data.
 
         Args:
@@ -251,7 +249,7 @@ class FPBoost(BaseEstimator, SurvivalAnalysisMixin):
         mean_time = survival.sum(axis=1) / len(self._base_timeline)
         return -mean_time
 
-    def _predict_cumulative_hazard(self, X: np.array, times: np.array) -> np.array:
+    def _predict_cumulative_hazard(self, X, times):
         check_is_fitted(self, "unique_times_")
 
         params = torch.tensor(self._predict_params(X)).float()
@@ -278,9 +276,7 @@ class FPBoost(BaseEstimator, SurvivalAnalysisMixin):
             cum_hazard += (loglogistic_cum_hazard * ws[:, self.weibull_heads :]).sum(axis=1)
         return cum_hazard
 
-    def predict_cumulative_hazard_function(
-        self, X: np.array, return_array: bool = False
-    ) -> Union[list[StepFunction], np.array]:
+    def predict_cumulative_hazard_function(self, X, return_array=False):
         """Predict the cumulative hazard function for the input data.
 
         Args:
@@ -299,9 +295,7 @@ class FPBoost(BaseEstimator, SurvivalAnalysisMixin):
         times = self.max_time_ * times
         return np.array([StepFunction(times, cum_hazard[i]) for i in range(len(X))])
 
-    def predict_survival_function(
-        self, X: np.array, return_array: bool = False
-    ) -> Union[list[StepFunction], np.array]:
+    def predict_survival_function(self, X, return_array=False):
         """Predict the survival function for the input data.
 
         Args:
@@ -309,7 +303,7 @@ class FPBoost(BaseEstimator, SurvivalAnalysisMixin):
             return_array: If `True`, the output is a numpy array. Otherwise, the output is a list
                 of `StepFunction` objects, which can be called to evaluate the survival function at
                 specific times.
-        
+
         Returns:
             The predicted survival function.
         """

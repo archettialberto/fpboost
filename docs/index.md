@@ -16,4 +16,4 @@ TODO: Write usage instructions.
 
 ## Documentation
 
-::: fpboost.fpboost.FPBoost
+::: fpboost.models.FPBoost

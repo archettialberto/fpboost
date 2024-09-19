@@ -24,3 +24,18 @@ poetry install
 ```
 TODO
 ```
+
+## TODOs
+
+### Urgent
+
+- [ ] Reach a status to preprint the paper (fix README/doc and publish to Pypy)
+
+### All
+
+- [ ] Publish model on Pypy
+- [ ] Add documentation
+- [ ] Fix README with all the necessary information
+- [ ] Fix pyproject.toml
+- [ ] Add Github Actions
+- [ ] Add tests
