@@ -1,7 +1,7 @@
 """Module for the FPBoost class."""
 
 import numbers
-from typing import Optional
+from typing import Optional, Union
 
 import numpy as np
 import torch
@@ -25,24 +25,35 @@ class FPBoost(SurvivalAnalysisMixin, BaseEstimator):
 
     TODO: reference
 
-    Args:
-        weibull_heads: Number of Weibull heads in the ensemble.
-        loglogistic_heads: Number of log-logistic heads in the ensemble.
-        n_estimators: Number of boosting iterations to perform. During each iteration, a base
-            learner is trained to minimize the negative log-likelihood of the ensemble predictions
-            for each parameter of the fully parametric distributions.
-        max_depth: Maximum depth of the individual trees in the ensemble.
-        learning_rate: Shrinks the contribution of each base learner.
-        alpha: Strength of the ElasticNet regularization. The penalty term is a combination of
-            L1 and L2 regularization. A value of `alpha=0` corresponds to no regularization.
-        l1_ratio: Ratio of L1 regularization in the ElasticNet penalty. A value of `l1_ratio=1`
-            corresponds to L1 regularization, `l1_ratio=0` corresponds to L2 regularization.
-        uniform_heads: If `True`, the weights of the heads are fixed to be uniform. Otherwise,
-            the weights are learned by the model.
-        heads_activation: Activation function for the weights of the heads. If 'relu', the weights
-            are constrained to be non-negative. If 'sigmoid', the weights are constrained to be
-            in the range `[0, 1]`.
-        random_state: The seed of the pseudo random number generator to use when training the model.
+    Parameters
+    ----------
+    weibull_heads : int, default=2
+        Number of Weibull heads in the ensemble.
+    loglogistic_heads : int, default=2
+        Number of log-logistic heads in the ensemble.
+    n_estimators : int, default=100
+        Number of boosting iterations to perform. During each iteration, a base
+        learner is trained to minimize the negative log-likelihood of the ensemble predictions
+        for each parameter of the fully parametric distributions.
+    max_depth : int, default=1
+        Maximum depth of the individual trees in the ensemble.
+    learning_rate : float, default=0.1
+        Shrinks the contribution of each base learner.
+    alpha : float, default=0.0
+        Strength of the ElasticNet regularization. The penalty term is a combination of
+        L1 and L2 regularization. A value of `alpha=0` corresponds to no regularization.
+    l1_ratio : float, default=0.5
+        Ratio of L1 regularization in the ElasticNet penalty. A value of `l1_ratio=1`
+        corresponds to L1 regularization, `l1_ratio=0` corresponds to L2 regularization.
+    uniform_heads : bool, default=False
+        If `True`, the weights of the heads are fixed to be uniform. Otherwise,
+        the weights are learned by the model.
+    heads_activation : {'relu', 'sigmoid'}, default='relu'
+        Activation function for the weights of the heads. If 'relu', the weights
+        are constrained to be non-negative. If 'sigmoid', the weights are constrained to be
+        in the range `[0, 1]`.
+    random_state : int, optional
+        The seed of the pseudo random number generator to use when training the model.
     """
 
     _parameter_constraints = {
@@ -217,11 +228,16 @@ class FPBoost(SurvivalAnalysisMixin, BaseEstimator):
     def fit(self, X, y) -> "FPBoost":
         """Fit the model to the training data.
 
-        Args:
-            X: Input data of shape `(n_samples, n_features)`.
-            y: Structured array of shape `(n_samples,)` containing the `event` and `time` fields.
+        Parameters
+        ----------
+        X : np.array
+            Input data of shape `(n_samples, n_features)`.
+        y : np.array
+            Structured array of shape `(n_samples,)` containing the `event` and `time` fields.
 
-        Returns:
+        Returns
+        -------
+        FPBoost
             The fitted model.
         """
         self._validate_params()
@@ -237,10 +253,14 @@ class FPBoost(SurvivalAnalysisMixin, BaseEstimator):
     def predict(self, X):
         """Predict the negative mean time to event for the input data.
 
-        Args:
-            X: Input data of shape `(n_samples, n_features)`.
+        Parameters
+        ----------
+        X : np.array
+            Input data of shape `(n_samples, n_features)`.
 
-        Returns:
+        Returns
+        -------
+        np.array
             The predicted negative mean time to event.
         """
         X = self._validate_data(X, reset=False)
@@ -279,13 +299,18 @@ class FPBoost(SurvivalAnalysisMixin, BaseEstimator):
     def predict_cumulative_hazard_function(self, X, return_array=False):
         """Predict the cumulative hazard function for the input data.
 
-        Args:
-            X: Input data of shape `(n_samples, n_features)`.
-            return_array: If `True`, the output is a numpy array. Otherwise, the output is a list
-                of `StepFunction` objects, which can be called to evaluate the cumulative hazard
-                function at specific times.
+        Parameters
+        ----------
+        X : np.array
+            Input data of shape `(n_samples, n_features)`.
+        return_array : bool, default=False
+            If `True`, the output is a numpy array. Otherwise, the output is a list
+            of `StepFunction` objects, which can be called to evaluate the cumulative hazard
+            function at specific times.
 
-        Returns:
+        Returns
+        -------
+        Union[list[StepFunction], np.array]
             The predicted cumulative hazard function.
         """
         times = self.unique_times_ if return_array else self._base_timeline
@@ -298,13 +323,18 @@ class FPBoost(SurvivalAnalysisMixin, BaseEstimator):
     def predict_survival_function(self, X, return_array=False):
         """Predict the survival function for the input data.
 
-        Args:
-            X: Input data of shape `(n_samples, n_features)`.
-            return_array: If `True`, the output is a numpy array. Otherwise, the output is a list
-                of `StepFunction` objects, which can be called to evaluate the survival function at
-                specific times.
+        Parameters
+        ----------
+        X : np.array
+            Input data of shape `(n_samples, n_features)`.
+        return_array : bool, default=False
+            If `True`, the output is a numpy array. Otherwise, the output is a list
+            of `StepFunction` objects, which can be called to evaluate the survival function at
+            specific times.
 
-        Returns:
+        Returns
+        -------
+        Union[list[StepFunction], np.array]
             The predicted survival function.
         """
         times = self.unique_times_ if return_array else self._base_timeline
