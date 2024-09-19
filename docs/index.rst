@@ -15,9 +15,9 @@ documentation for details.
    :maxdepth: 2
    :caption: Contents:
 
-:mod:`fpboost` Module
+:mod:`models` Module
 -----------------------------
 
-.. automodule:: fpboost.fpboost
+.. automodule:: fpboost.models
     :members:
     :show-inheritance:

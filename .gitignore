@@ -22,6 +22,9 @@ results
 # Lightning logs
 *lightning_logs*
 
+# Sphinx documentation
+docs/build
+
 ### End of manual ignores ###
 
 ### Automated ignores ###
