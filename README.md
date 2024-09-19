@@ -3,39 +3,98 @@
 ![License Banner](https://img.shields.io/badge/License-MIT-purple.svg)
 ![Black Banner](https://img.shields.io/badge/code%20style-black-000000.svg)
 
-This repository contains the implementation of the FPBoost model for survival analysis.
-The algorithm is based on the gradient boosting framework and uses a composition of fully parametric
-models to estimate the hazard function.
+FPBoost is a Python library for survival analysis that introduces a novel algorithm for estimating 
+hazard functions. Built upon the gradient boosting framework, it uses a composition of fully 
+parametric hazard functions to model time-to-event data. FPBoost directly optimizes the survival 
+likelihood via gradient boosting, providing improved risk estimation according to concordance and 
+calibration metrics. FPBoost is fully compatible with 
+[scikit-survival](https://scikit-survival.readthedocs.io/en/stable/index.html) for seamless 
+integration into existing workflows.
 
-## ⚙️ Installation
 
-To install the dependencies, create a new Conda environment and activate it.
+
+## 📦 Installation
+
+### Pypi
+
+To install the latest release from PyPI, run the following command:
+
 ```bash
-conda env create -f environment.yml && conda activate fpboost
+pip install fpboost
 ```
 
-Then, install the dependencies using Poetry.
-```bash
-poetry install
+### From Source
+
+To install the latest version from source, clone the repository and follow these steps:
+
+1. Clone the repository: 
+    ```bash
+    git clone https://github.com/yourusername/fpboost.git
+    cd fpboost
+    ```
+2. Create and Activate Conda Environment
+
+    ```bash
+    conda env create -f environment.yml
+    conda activate fpboost
+    ```
+3. Install Dependencies with Poetry
+    ```bash
+    poetry install
+    ```
+
+## 🚀 Quick Start
+Here's a simple example of how to use FPBoost:
+
+```python
+from fpboost.models import FPBoost
+from sksurv.datasets import load_breast_cancer
+from sksurv.preprocessing import OneHotEncoder
+from sklearn.model_selection import train_test_split
+
+# Load and preprocess the dataset
+data_x, data_y = load_breast_cancer()
+encoder = OneHotEncoder()
+X, y = encoder.fit_transform(data_x).to_numpy(), data_y
+
+# Split into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+# Initialize the model
+model = FPBoost(
+    n_estimators=100,
+    learning_rate=0.1,
+    max_depth=3,
+    random_state=42
+)
+
+# Fit the model
+model.fit(X_train, y_train)
+
+# Predict survival probabilities
+surv_probs = model.predict_survival_function(X_test)
+
+# Evaluate the model
+from sksurv.metrics import concordance_index_censored
+c_index = concordance_index_censored(
+    y_test['e.tdm'],  # event indicator
+    y_test['t.tdm'],  # time to event
+    model.predict(X_test)
+)
+
+print("Concordance Index:", c_index[0])
 ```
 
-## :books: How to Cite
+## 📖 Documentation
 
+For detailed usage instructions and API reference, please refer to the [FPBoost Documentation]().
+
+## 📚 How to Cite
+
+If you use FPBoost in your research, please cite our paper:
+
+```bibtex
+@article{archetti2024fpboost,
+  TODO
+}
 ```
-TODO
-```
-
-## TODOs
-
-### Urgent
-
-- [ ] Reach a status to preprint the paper (fix README/doc and publish to Pypy)
-
-### All
-
-- [ ] Publish model on Pypy
-- [ ] Add documentation
-- [ ] Fix README with all the necessary information
-- [ ] Fix pyproject.toml
-- [ ] Add Github Actions
-- [ ] Add tests
