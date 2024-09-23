@@ -21,7 +21,7 @@ To install the latest version of FPBoost from source, clone the repository and f
 
 1. Clone the repository: 
     ```bash
-    git clone https://github.com/yourusername/fpboost.git
+    git clone https://github.com/archettialberto/fpboost.git
     cd fpboost
     ```
 2. Create and Activate Conda Environment
