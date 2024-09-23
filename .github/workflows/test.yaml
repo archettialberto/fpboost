@@ -39,7 +39,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        poetry install --without experiments
+        poetry install --without experiments --without docs
 
     - name: Run tests with coverage
       continue-on-error: true
