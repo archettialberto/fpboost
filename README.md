@@ -15,17 +15,9 @@ integration into existing workflows.
 
 ## 📦 Installation
 
-### Pypi
-
-To install the latest release from PyPI, run the following command:
-
-```bash
-pip install fpboost
-```
-
 ### From Source
 
-To install the latest version from source, clone the repository and follow these steps:
+To install the latest version of FPBoost from source, clone the repository and follow these steps:
 
 1. Clone the repository: 
     ```bash
@@ -33,7 +25,6 @@ To install the latest version from source, clone the repository and follow these
     cd fpboost
     ```
 2. Create and Activate Conda Environment
-
     ```bash
     conda env create -f environment.yml
     conda activate fpboost
@@ -95,6 +86,10 @@ If you use FPBoost in your research, please cite our paper:
 
 ```bibtex
 @article{archetti2024fpboost,
-  TODO
+  title        = {FPBoost: Fully Parametric Gradient Boosting for Survival Analysis},
+  author       = {Alberto Archetti and Eugenio Lomurno and Diego Piccinotti and Matteo Matteucci},
+  journal      = {arXiv preprint arXiv:2409.13363},
+  year         = {2024},
+  url          = {https://arxiv.org/abs/2409.13363}
 }
 ```

@@ -23,7 +23,11 @@ class FPBoost(SurvivalAnalysisMixin, BaseEstimator):
     optional ElasticNet regularization term. The model is an ensemble of base learners, where each
     base learner is either a Weibull or a log-logistic distribution.
 
-    TODO: reference
+    References
+    ----------
+    Archetti, A., Lomurno, E., Piccinotti, D. & Matteucci, M. FPBoost: Fully Parametric Gradient 
+        Boosting for Survival Analysis. arXiv preprint arXiv:2409.13363 (2024). 
+        https://arxiv.org/abs/2409.13363
 
     Parameters
     ----------
