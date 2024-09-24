@@ -26,7 +26,7 @@ To install the latest version of FPBoost from source, clone the repository and f
     ```
 2. Create and Activate Conda Environment
     ```bash
-    conda env create -f environment.yml
+    conda env create -f environment.yaml
     conda activate fpboost
     ```
 3. Install Dependencies with Poetry
