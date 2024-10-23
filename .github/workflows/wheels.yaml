@@ -5,6 +5,9 @@ permissions:
 
 on: [push, pull_request]
 
+env:
+  POETRY_VERSION: 1.4.0
+
 jobs:
   build_wheels:
     name: Build wheels on ${{ matrix.os }}
@@ -18,6 +21,9 @@ jobs:
 
       # Used to host cibuildwheel
       - uses: actions/setup-python@v5
+
+      - name: Install Poetry
+        run: pipx install poetry==$POETRY_VERSION
 
       - name: Install cibuildwheel
         run: pipx install cibuildwheel==2.21.3
