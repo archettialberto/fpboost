@@ -5,7 +5,7 @@ permissions:
 
 env:
   POETRY_VERSION: 1.4.0
-  CI_BUILD_WHEEL_VERSION: 2.21.3
+  PYTHON_VERSON: 3.12
 
 on:
   push:
@@ -15,12 +15,8 @@ on:
 
 jobs:
   build_wheels:
-    name: Build wheels on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        # python-version: ["3.10", "3.11", "3.12"]
-        os: [ubuntu-latest, windows-latest, macos-13, macos-latest]
+    name: Build wheel
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -31,18 +27,12 @@ jobs:
       # Used to host cibuildwheel
       - uses: actions/setup-python@v5
         with:
+          python-version: ${{ env.PYTHON_VERSON }}
           cache: poetry
 
-      - name: Install cibuildwheel
-        run: pipx install cibuildwheel==${{ env.CI_BUILD_WHEEL_VERSION }}
-
-      - name: Build wheels
-        run: cibuildwheel --output-dir wheelhouse
-        # to supply options, put them in 'env', like:
-        # env:
-        #   CIBW_SOME_OPTION: value
+      - name: Build package
+        run: poetry build
 
       - uses: actions/upload-artifact@v4
         with:
-          name: cibw-wheels-${{ matrix.os }}-${{ strategy.job-index }}
-          path: ./wheelhouse/*.whl
+          name: dist
