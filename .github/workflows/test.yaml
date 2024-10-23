@@ -1,10 +1,17 @@
 name: Test
 
+permissions:
+  contents: read
+  actions: read
+
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+
+env:
+  POETRY_VERSION: 1.4.0
 
 jobs:
   test:
@@ -17,25 +24,13 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
+    - name: Install poetry
+      run: pipx install poetry==$POETRY_VERSION
+
+    - uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
-
-    - name: Setup Poetry
-      run: |
-        python -m pip install --upgrade pip
-        pip install poetry
-        poetry config virtualenvs.in-project true
-
-    - name: Cache Poetry virtualenv
-      uses: actions/cache@v3
-      with:
-        path: |
-          .venv
-        key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-poetry-
+        cache: poetry
 
     - name: Install dependencies
       run: |
