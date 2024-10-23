@@ -3,15 +3,13 @@
 ![License Banner](https://img.shields.io/badge/License-MIT-purple.svg)
 ![Black Banner](https://img.shields.io/badge/code%20style-black-000000.svg)
 
-FPBoost is a Python library for survival analysis that introduces a novel algorithm for estimating 
-hazard functions. Built upon the gradient boosting framework, it uses a composition of fully 
-parametric hazard functions to model time-to-event data. FPBoost directly optimizes the survival 
-likelihood via gradient boosting, providing improved risk estimation according to concordance and 
-calibration metrics. FPBoost is fully compatible with 
-[scikit-survival](https://scikit-survival.readthedocs.io/en/stable/index.html) for seamless 
+FPBoost is a Python library for survival analysis that introduces a novel algorithm for estimating
+hazard functions. Built upon the gradient boosting framework, it uses a composition of fully
+parametric hazard functions to model time-to-event data. FPBoost directly optimizes the survival
+likelihood via gradient boosting, providing improved risk estimation according to concordance and
+calibration metrics. FPBoost is fully compatible with
+[scikit-survival](https://scikit-survival.readthedocs.io/en/stable/index.html) for seamless
 integration into existing workflows.
-
-
 
 ## 📦 Installation
 
@@ -19,7 +17,7 @@ integration into existing workflows.
 
 To install the latest version of FPBoost from source, clone the repository and follow these steps:
 
-1. Clone the repository: 
+1. Clone the repository:
     ```bash
     git clone https://github.com/archettialberto/fpboost.git
     cd fpboost
