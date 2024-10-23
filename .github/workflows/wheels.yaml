@@ -3,7 +3,11 @@ name: Build
 permissions:
   contents: read
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 env:
   POETRY_VERSION: 1.4.0
