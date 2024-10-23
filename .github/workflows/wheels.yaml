@@ -4,8 +4,8 @@ permissions:
   contents: read
 
 env:
-    POETRY_VERSION: 1.4.0
-    CI_BUILD_WHEEL_VERSION: 2.21.3
+  POETRY_VERSION: 1.4.0
+  CI_BUILD_WHEEL_VERSION: 2.21.3
 
 on:
   push:
@@ -19,7 +19,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: ["3.10", "3.11", "3.12"]
+        # python-version: ["3.10", "3.11", "3.12"]
         os: [ubuntu-latest, windows-latest, macos-13, macos-latest]
 
     steps:
@@ -31,7 +31,6 @@ jobs:
       # Used to host cibuildwheel
       - uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
           cache: poetry
 
       - name: Install cibuildwheel
