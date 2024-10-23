@@ -1,3 +1,16 @@
+[project]
+name = "fpboost"
+version = "0.1.0"
+description = "FPBoost: a gradient boosting model for survival analysis that builds hazard functions as a combination of fully parametric hazards."
+authors = [
+	{ name = "Alberto Archetti", email = "alberto.archetti@polimi.it" },
+	{ name = "Eugenio Lomurno", email = "eugenio.lomurno@polimi.it" },
+	{ name = "Diego Piccinotti", email = "diego@chattermill.io" }
+]
+license = "MIT"
+readme = "README.md"
+requires-python = ">=3.10.0,<3.13.0"
+
 [tool.poetry]
 name = "fpboost"
 version = "0.1.0"
