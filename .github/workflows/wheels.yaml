@@ -25,14 +25,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install Poetry
+        run: pipx install poetry==${{ env.POETRY_VERSION }}
+
       # Used to host cibuildwheel
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
           cache: poetry
-
-      - name: Install Poetry
-        run: pipx install poetry==${{ env.POETRY_VERSION }}
 
       - name: Install cibuildwheel
         run: pipx install cibuildwheel==${{ env.CI_BUILD_WHEEL_VERSION }}
