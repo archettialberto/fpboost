@@ -9,9 +9,6 @@ on:
   pull_request:
     branches: [ main ]
 
-env:
-  POETRY_VERSION: 1.4.0
-
 jobs:
   build_wheels:
     name: Build wheels on ${{ matrix.os }}
@@ -27,7 +24,7 @@ jobs:
       - uses: actions/setup-python@v5
 
       - name: Install Poetry
-        run: pipx install poetry==$POETRY_VERSION
+        run: pipx install poetry==1.4.0
 
       - name: Install cibuildwheel
         run: pipx install cibuildwheel==2.21.3
