@@ -1,5 +1,7 @@
 # FPBoost: Fully Parametric Gradient Boosting for Survival Analysis
 
+![CI Status](https://github.com/archettialberto/fpboost/workflows/Test%2C%20Build%20and%20Release%20to%20Pypi/badge.svg)
+[![codecov](https://codecov.io/gh/{{REPOSITORY}}/branch/main/graph/badge.svg)](https://codecov.io/gh/{{REPOSITORY}})
 ![License Banner](https://img.shields.io/badge/License-MIT-purple.svg)
 ![Black Banner](https://img.shields.io/badge/code%20style-black-000000.svg)
 
@@ -12,6 +14,14 @@ calibration metrics. FPBoost is fully compatible with
 integration into existing workflows.
 
 ## 📦 Installation
+
+### From PyPI
+
+To install FPBoost from PyPI, run the following command:
+
+```bash
+pip install fpboost
+```
 
 ### From Source
 
@@ -73,10 +83,6 @@ c_index = concordance_index_censored(
 
 print("Concordance Index:", c_index[0])
 ```
-
-## 📖 Documentation
-
-For detailed usage instructions and API reference, please refer to the [FPBoost Documentation]().
 
 ## 📚 How to Cite
 
