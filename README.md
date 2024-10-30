@@ -1,8 +1,8 @@
 # FPBoost: Fully Parametric Gradient Boosting for Survival Analysis
 
-![CI Status](https://github.com/archettialberto/fpboost/workflows/Test%2C%20Build%20and%20Release%20to%20Pypi/badge.svg)
-[![codecov](https://codecov.io/gh/{{REPOSITORY}}/branch/main/graph/badge.svg)](https://codecov.io/gh/{{REPOSITORY}})
-![License Banner](https://img.shields.io/badge/License-MIT-purple.svg)
+![CI Status](https://github.com/archettialberto/fpboost/workflows/test-build-release/badge.svg)
+[![codecov](https://codecov.io/gh/archettialberto/fpboost/branch/main/graph/badge.svg)](https://codecov.io/gh/archettialberto/fpboost)
+![License Banner](https://img.shields.io/badge/license-MIT-purple.svg)
 ![Black Banner](https://img.shields.io/badge/code%20style-black-000000.svg)
 
 FPBoost is a Python library for survival analysis that introduces a novel algorithm for estimating
